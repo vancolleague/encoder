@@ -1,5 +1,5 @@
 use std::cmp::min;
-use std::sync::atomic::AtomicI64;
+use std::sync::atomic::AtomicI32;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
@@ -14,7 +14,7 @@ const HIGH_LIMIT: i16 = 100;
 
 pub struct Encoder<'d> {
     unit: PcntDriver<'d>,
-    approx_value: Arc<AtomicI64>,
+    approx_value: Arc<AtomicI32>,
 }
 
 impl<'d> Encoder<'d> {
@@ -61,9 +61,9 @@ impl<'d> Encoder<'d> {
         //       unit.set_filter_value(min(1023/2, 1023))?;
         unit.filter_enable()?;
 
-        let approx_value = Arc::new(AtomicI64::new(0));
+        let approx_value = Arc::new(AtomicI32::new(0));
         // unsafe interrupt code to catch the upper and lower limits from the encoder
-        // and track the overflow in `value: Arc<AtomicI64>` - I plan to use this for
+        // and track the overflow in `value: Arc<AtomicI32>` - I plan to use this for
         // a wheeled robot's odomerty
         unsafe {
             let approx_value = approx_value.clone();
