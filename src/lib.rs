@@ -70,10 +70,10 @@ impl<'d> Encoder<'d> {
             unit.subscribe(move |status| {
                 let status = PcntEventType::from_repr_truncated(status);
                 if status.contains(PcntEvent::HighLimit) {
-                    approx_value.fetch_add(HIGH_LIMIT as i64, Ordering::SeqCst);
+                    approx_value.fetch_add(HIGH_LIMIT as i32, Ordering::SeqCst);
                 }
                 if status.contains(PcntEvent::LowLimit) {
-                    approx_value.fetch_add(LOW_LIMIT as i64, Ordering::SeqCst);
+                    approx_value.fetch_add(LOW_LIMIT as i32, Ordering::SeqCst);
                 }
             })?;
         }
@@ -86,9 +86,9 @@ impl<'d> Encoder<'d> {
         Ok(Self { unit, approx_value })
     }
 
-    pub fn get_value(&self) -> Result<i64, EspError> {
+    pub fn get_value(&self) -> Result<i32, EspError> {
         let value =
-            self.approx_value.load(Ordering::Relaxed) + self.unit.get_counter_value()? as i64;
+            self.approx_value.load(Ordering::Relaxed) + self.unit.get_counter_value()? as i32;
         Ok(value)
     }
 }
